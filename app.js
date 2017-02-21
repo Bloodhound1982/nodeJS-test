@@ -10,17 +10,12 @@ let express = require('express'),
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.text());
 app.use(router);
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
-
 app.use('/api', index);
-
-
-
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

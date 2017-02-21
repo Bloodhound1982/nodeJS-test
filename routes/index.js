@@ -1,5 +1,8 @@
 let express = require('express'),
-    router = express.Router();
+    router = express.Router(),
+    Users = require('../db').Users;
+app = require('../app');
+
 
 router.get('/profile', function (req, res) {
     res.sendStatus(200);
@@ -7,7 +10,26 @@ router.get('/profile', function (req, res) {
 
 router.post('/register', function (req, res) {
     let user = req.body;
-    res.status(201).send({token: 'this is my token'});
+
+    if (!user.email) {
+        console.error('without email!');
+        res.sendStatus(400);
+    } else if (!user.password) {
+        console.error('without password!');
+        res.sendStatus(400);
+    } else {
+        let userForRecord = new Users({
+            email: user.email,
+            name: user.name
+        });
+        userForRecord.password = user.password;
+        userForRecord.save().then(document => {
+            //TODO replace hardcode with token
+            res.status(201).send({token: 'this is fake token'});
+        }).catch(err => {
+            res.sendStatus(400);
+        })
+    }
 });
 
 router.post('/login', function (req, res) {
