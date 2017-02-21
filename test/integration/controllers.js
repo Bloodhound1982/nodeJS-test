@@ -27,6 +27,7 @@ describe('Authentication Controller', () => {
     let _token = null;
     return request(app)
       .post('/api/login')
+
       .send({ email, password })
       .expect(200)
       .then((data) => {
