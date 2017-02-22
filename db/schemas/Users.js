@@ -33,6 +33,11 @@ usersSchema.methods.encryptPassword = function (password) {
     return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
 };
 
+usersSchema.methods.generateToken = function () {
+    return Math.random().toString(36).substring(2, 15)
+            + Math.random().toString(36).substring(2, 15);
+};
+
 usersSchema.virtual('password')
     .set(function (password) {
         this._plainPassword = password;

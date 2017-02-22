@@ -5,6 +5,7 @@ app = require('../app');
 
 
 router.get('/profile', function (req, res) {
+    console.dir(req.headers.authorization);
     res.sendStatus(200);
 });
 
@@ -22,18 +23,21 @@ router.post('/register', function (req, res) {
             email: user.email,
             name: user.name
         });
+        let token = userForRecord.generateToken();
         userForRecord.password = user.password;
-        userForRecord.save().then(document => {
-            //TODO replace hardcode with token
-            res.status(201).send({token: 'this is fake token'});
+        userForRecord.tokens.push(token);
+
+        userForRecord.save().then(() => {
+            res.status(201).send({token: token});
         }).catch(err => {
+            console.error(err);
             res.sendStatus(400);
         })
     }
 });
 
 router.post('/login', function (req, res) {
-    res.status(200).send({token: 'this is my token'});
+    res.status(200).send({token: 'this is fake token'});
 });
 
 module.exports = router;
