@@ -37,6 +37,8 @@ router.post('/register', function (req, res) {
 });
 
 router.post('/login', function (req, res) {
+
+
     res.status(200).send({token: 'this is fake token'});
 });
 
