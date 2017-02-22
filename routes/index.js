@@ -11,7 +11,6 @@ router.get('/profile', function (req, res) {
 
 router.post('/register', function (req, res) {
     let user = req.body;
-
     if (!user.email) {
         console.error('without email!');
         res.sendStatus(400);
@@ -37,9 +36,26 @@ router.post('/register', function (req, res) {
 });
 
 router.post('/login', function (req, res) {
-
-
-    res.status(200).send({token: 'this is fake token'});
+    let requestUser = req.body;
+    Users.findOne({
+        'email': requestUser.email
+    }).exec( (err, user) => {
+        if (err) return res.sendStatus(400);
+        if (!user) return res.sendStatus(400);
+        if (user.checkPassword(requestUser.password)) {
+            let token = user.generateToken();
+            Users.findByIdAndUpdate(
+                user._id,
+                {$push: {'tokens': token}},
+                {safe: true, upsert: false},
+                (err, user) => {
+                    res.status(200).send({token: token});
+                }
+            );
+        } else {
+            res.sendStatus(400);
+        }
+    });
 });
 
 module.exports = router;
