@@ -1,3 +1,6 @@
+/**
+ * Schema for users
+ */
 let mongoose = require('mongoose'),
     crypto = require('crypto');
 
@@ -29,13 +32,20 @@ let usersSchema = new Schema({
     }]
 });
 
+//method that return hashed password for saving in DB
 usersSchema.methods.encryptPassword = function (password) {
     return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
 };
 
+//method for generating simple token, like '17h0tofb8yt5f4oiuk81am5w4z'
 usersSchema.methods.generateToken = function () {
     return Math.random().toString(36).substring(2, 15)
-            + Math.random().toString(36).substring(2, 15);
+        + Math.random().toString(36).substring(2, 15);
+};
+
+//method for checking password
+usersSchema.methods.checkPassword = function (password) {
+    return this.encryptPassword(password) === this.hashedPassword;
 };
 
 usersSchema.virtual('password')
@@ -47,12 +57,6 @@ usersSchema.virtual('password')
     .get(function () {
         return this._plainPassword;
     });
-
-usersSchema.methods.checkPassword = function (password) {
-    return this.encryptPassword(password) === this.hashedPassword;
-};
-
-
 
 let Users = mongoose.model('Users', usersSchema);
 

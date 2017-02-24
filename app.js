@@ -7,7 +7,6 @@ let express = require('express'),
     app = express(),
     router = express.Router();
 
-
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(bodyParser.json());

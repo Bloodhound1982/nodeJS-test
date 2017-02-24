@@ -7,6 +7,8 @@ let app = require('../../app')
 let email = 'integration_test_' + Math.floor(Date.now() / 1000) + '@wartech.ua'
 let password = 'test'
 let name = 'My name'
+
+// add variable _user for passing test
 let _user = {
               email: email,
               password: password,
