@@ -7,6 +7,12 @@ let app = require('../../app')
 let email = 'integration_test_' + Math.floor(Date.now() / 1000) + '@wartech.ua'
 let password = 'test'
 let name = 'My name'
+let _user = {
+              email: email,
+              password: password,
+              name: name
+};
+
 
 describe('Authentication Controller', () => {
 
@@ -78,7 +84,7 @@ describe('Profile controller', () => {
       .set('Authorization', 'Bearer ' + _token)
       .expect(200)
       .then((data) => {
-        assert.equal(data.body.email, _user);
+        assert.equal(data.body.email, _user.email);
       });
   });
 

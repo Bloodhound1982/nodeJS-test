@@ -5,8 +5,55 @@ app = require('../app');
 
 
 router.get('/profile', function (req, res) {
-    console.dir(req.headers.authorization);
-    res.sendStatus(200);
+
+    //TODO normal checking for this
+    if (!req.headers.authorization) return res.sendStatus(401);
+    let requestToken = req.headers.authorization.split('Bearer ')[1];
+    if (!requestToken) return res.sendStatus(401);
+
+    Users.findOne({
+        tokens: {
+            $all: [requestToken]
+        }
+    }).exec((err, user) => {
+        if (err) return res.sendStatus(401);
+        if (!user) return res.sendStatus(401);
+        //TODO not correct responce - don't pass last test
+        res.status(200).json({
+            email: user.email,
+            name: user.name
+        });
+    });
+});
+
+
+router.get('logout', function (req, res) {
+
+    //TODO normal checking for this
+    if (!req.headers.authorization) return res.sendStatus(401);
+    let requestToken = req.headers.authorization.split('Bearer ')[1];
+    if (!requestToken) return res.sendStatus(401);
+
+    Users.findOne({
+        tokens: {
+            $all: [requestToken]
+        }
+    }).exec((err, user) => {
+        if (err) return res.sendStatus(401);
+        if (!user) return res.sendStatus(401);
+
+        //TODO fix bug, add normal method for pulling array
+        Users.findByIdAndUpdate(
+            user._id,
+            {$pulAll: {'tokens': ''}},
+            {safe: true, upsert: false},
+            (err, user) => {
+                console.log(user);
+                res.status(200).send(user.tokens);
+            }
+
+        )
+    })
 });
 
 router.post('/register', function (req, res) {
@@ -39,7 +86,7 @@ router.post('/login', function (req, res) {
     let requestUser = req.body;
     Users.findOne({
         'email': requestUser.email
-    }).exec( (err, user) => {
+    }).exec((err, user) => {
         if (err) return res.sendStatus(400);
         if (!user) return res.sendStatus(400);
         if (user.checkPassword(requestUser.password)) {
