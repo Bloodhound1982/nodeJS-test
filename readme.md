@@ -26,3 +26,12 @@
 
 ### Be ready
 * To explain your decisions
+
+### Installation
+
+* ```git clone https://github.com/Bloodhound1982/nodeJS-test/```
+* ```cd nodeJS-test```
+* ```npm i```
+
+### Note:
+   *I had to add variable ```_user``` to ```controllers.js```  that passed tests.*
